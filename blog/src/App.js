@@ -3,57 +3,86 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  let [title,modiTitle] = useState(['남자 코드 추천','강남 우동 맛집','야호'])
-  let [like, modiLike] = useState([0,0,0])
-  let [modal,modiModal] = useState(false)
+  let [title, updateTitle] = useState(['남자 코트 추천', '강남 우동 맛집', '낙성대 맛집']);  
+  let [like,updateLike] = useState([0,0,0]);
+  let [clickTitle,updateClickTitle] = useState(0);
+  let [val,updateValue] = useState('');
+  let [writer, updateWriter] = useState('');
 
-  function updateList(i){
-    let likeArr = like.map((data,idx)=>{
-      return (i==idx) ? data+1 : data
+  function updateTitleBtn(){
+    let newArr = title.map((data,idx)=>{
+      return (idx==0) ? "여자 코트 추천" : data;
     })
-    modiLike(likeArr)
+    updateTitle(newArr)
+  }
+  
+  let [modal,updateModal] = useState(false);
+
+  function updateLikeBtn(i){
+    let likeArr = [...like];
+    likeArr[i] = likeArr[i]+1;
+    updateLike(likeArr)
   }
 
-  function modalTF(i){
-    
-    modiModal(!modal)
+  function clickTitleBtn(i){
+    updateClickTitle(i)
+    updateModal(!modal)
+  }
+  
+  function insertWriter(){
+    let titleArr = [...title]
+    titleArr.unshift(writer);
+    updateTitle(titleArr)
+
+    let likeArr = [...like]
+    likeArr.unshift(0);
+    updateLike(likeArr)
   }
 
   return (
     <div className="App">
       <div className="black-nav">
-          <div>Blog</div>
+        <div>개발 blog</div>
       </div>
 
       {
-        title.map((data,idx)=>{
-          return <div className="list">
-                  <h3>{data}<span onClick={(e) => updateList(idx)}>👍</span>{like[idx]}</h3>
-                  <p>2월16일</p>
-                  <button onClick={(e)=>modalTF(idx)}>온오프</button>
-                  <hr/>
-                </div>
+        title.map((data,i)=>{
+          return (
+            <div className="list" key={i} onClick={()=>{clickTitleBtn(i)}}>
+              <h3>{ data }<span onClick={()=>{updateLikeBtn(i)}}>👍</span>{like[i]}</h3>
+              <p>2월 17일 발행</p>
+              <hr/>
+            </div>
+          )
         })
       }
 
+      {/* <input onChange={(e)=>{updateValue(e.target.value)}} /> */}
+
+      {/* <button onClick={updateTitleBtn}>업데이트 타이틀 버튼</button> */}
+
+      <div className="publish">
+        <input onChange={(e)=>{updateWriter(e.target.value)}}/>
+        <button onClick={insertWriter}>저장</button>
+      </div>
       {
-        modal
-        ? <Modal title={title} />
+        modal === true
+        ? <Modal title={title} clickTitle={clickTitle}/>
         : null
       }
+
     </div>
   );
 }
 
 function Modal(props){
-  return (
+  return(
     <div className="modal">
-      <h2>{props.title[0]}</h2>
-      <p>날짜</p>
+      <h2>{props.title[props.clickTitle]}</h2>
+      <p></p>
       <p>상세내용</p>
     </div>
   )
 }
-
 
 export default App;
